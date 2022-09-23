@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raspicode home</title>
+    <script>
+        // Send picode to transmit
+        function send(){
+
+            // Clear result iframe before picode transmit
+            doc = document.getElementById('resultsIframe').contentWindow.document; 
+
+            doc.open(); 
+            doc.write("<pre>Transmitting...</pre>"); 
+            doc.close();
+
+            // Disable picode textarea 
+            document.getElementById("picodeTextarea").readOnly=true;
+            document.getElementById("picodeTextarea").style.setProperty("color", "grey");
+
+            // Disable send button
+            document.getElementById("sendButton").disabled=true;
+
+            // Form submit
+            document.getElementById("formPicode").submit();
+        }
+
+        // On result iframe load
+        function iframeOnLoad(obj){
+
+            // Re-enable picode textarea
+            document.getElementById("picodeTextarea").readOnly=false;
+            document.getElementById("picodeTextarea").style.removeProperty("color");
+            
+            // Re-enable send button
+            document.getElementById("sendButton").disabled=false;
+
+            // Re-size result iframe
+            obj.style.height = 0;
+            obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+        }
+    </script>
+</head>
+<body>
+<pre>
+    
+    Raspicode
+
+    Simple RESTful API for Raspberry Pi using Flask Web Server 
+    to transmit picode string format RF 315/433 Mhz OOK codes
+
+    See: <a href="https://github.com/latchdevel/raspicode" target="_blank">https://github.com/latchdevel/raspicode</a>
+
+
+    <button onClick="javascript:window.open('/status', 'results');" style="font-family:monospace;">Show status</button> <button onClick="javascript:window.open('/config', 'results');" style="font-family:monospace;">Show config</button> <button onClick="javascript:window.open('/logs', '_blank');" style="font-family:monospace;">Show logs</button>
+    <form action="/" method="post" target="results" id="formPicode">
+    Picode to transmit:
+
+    <textarea name="picode" id="picodeTextarea" rows="5" style="width:95%; font-family:monospace;" placeholder="Paste a picode here!"></textarea>
+
+    <button id="sendButton" onclick="send()" style="font-family:monospace;">Transmit</button>
+    </form>
+    <iframe name="results" id="resultsIframe" frameborder="0" width="95%" height="100" scrolling="auto" src="about:blank" onload="iframeOnLoad(this)"></iframe>
+</pre>
+</body>
+</html>   
