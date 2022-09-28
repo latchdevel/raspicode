@@ -279,9 +279,11 @@ def picode_post():
         picode = request.args.get('picode')
         if not isinstance(picode,str):
             picode = ""
+        else:
+            picode.strip()
     else:
         if "picode" in request.form:
-            picode = request.form["picode"]
+            picode = request.form["picode"].strip()
 
     if len(picode)>0:
         return tx_picode(picode)
