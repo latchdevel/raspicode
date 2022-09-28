@@ -259,6 +259,15 @@ def index():
         return picode_post()
 
 # --------------------------------------------------------------------------- #
+# Route for favicon.ico
+
+@app.route('/favicon.ico', methods=['GET'])
+def favicon():
+    response = send_from_directory('.','favicon.ico', mimetype='image/vnd.microsoft.icon')
+    response.direct_passthrough = False
+    return response
+
+# --------------------------------------------------------------------------- #
 # Route to transmit picode from GET or POST request to /picode
 
 @app.route('/picode', methods=['GET','POST'])
@@ -337,7 +346,7 @@ def get_logs():
     <!DOCTYPE html>
     <head>
         <meta charset="UTF-8">
-        <link rel="shortcut icon" href="about:blank" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
         <title>Raspicode logs</title>
         <script>
             window.addEventListener( "pageshow", function ( event ) {
