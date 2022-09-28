@@ -10,11 +10,8 @@
         function send(){
 
             // Clear result iframe before picode transmit
-            doc = document.getElementById('resultsIframe').contentWindow.document; 
-
-            doc.open(); 
-            doc.write("<pre>Transmitting...</pre>"); 
-            doc.close();
+            doc = document.getElementById('resultsIframe').contentWindow.document;
+            doc.body.innerHTML = "<pre>Transmitting...</pre>";
 
             // Re-size result iframe
             iframe = document.getElementById('resultsIframe');
