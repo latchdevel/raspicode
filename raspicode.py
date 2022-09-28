@@ -402,7 +402,7 @@ def not_found(error):
 # Custom error log for Method Not Allowed http_status_code 405
 
 @app.errorhandler(405)
-def not_found(error):
+def method_not_allowed(error):
     return ("Error(405) Method (%s) Not Allowed: The method is not allowed for the requested URL: %s" %(request.method,request.url),405)
 
 # --------------------------------------------------------------------------- #
