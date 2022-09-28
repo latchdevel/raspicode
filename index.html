@@ -38,7 +38,7 @@
             document.getElementById("sendButton").disabled=false;
 
             // Re-size result iframe
-            obj.style.height = 0;
+            obj.style.height = 32 + 'px'; // Fix Firefox extra height
             obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
         }
     </script>
