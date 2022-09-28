@@ -392,6 +392,13 @@ def send_file(file_to_send=""):
     return CustomResponse(data)
 
 # --------------------------------------------------------------------------- #
+# Custom error log for Bad request syntax http_status_code 400
+
+@app.errorhandler(400)
+def bad_request(error):
+    return ("Error(400): Bad request syntax %s" %(request.url),400)
+
+# --------------------------------------------------------------------------- #
 # Custom error log for Not Found http_status_code 404
 
 @app.errorhandler(404)
