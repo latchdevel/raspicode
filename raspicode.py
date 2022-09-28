@@ -251,7 +251,7 @@ def tx_picode(picode=""):
 def index():
     
     if request.method == 'GET':
-        response = send_from_directory('.', "index.html")
+        response = send_from_directory('.', "index.html", mimetype='text/html')
         response.direct_passthrough = False
         return response
     else:
