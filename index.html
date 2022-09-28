@@ -16,6 +16,11 @@
             doc.write("<pre>Transmitting...</pre>"); 
             doc.close();
 
+            // Re-size result iframe
+            iframe = document.getElementById('resultsIframe');
+            iframe.style.height = 32 + 'px'; // Fix Firefox extra height
+            iframe.style.height = iframe.contentWindow.document.documentElement.scrollHeight + 'px';
+
             // Disable picode textarea 
             document.getElementById("picodeTextarea").readOnly=true;
             document.getElementById("picodeTextarea").style.setProperty("color", "grey");
