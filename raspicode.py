@@ -28,8 +28,21 @@ from flask              import Flask, request, jsonify, send_from_directory
 
 from picode import *    # Python native functions to picode string parse and convert to pulse list
 
+def am_i_raspberrypi():
+    import io
+    try:
+        with io.open('/sys/firmware/devicetree/base/model', 'r') as m:
+            if 'raspberry pi' in m.read().lower(): return True
+    except Exception: pass
+    return False
+
 try:
-    import wiringpiook  # Python C Extension Module WiringPI OOK, build: "python3 setup.py develop --user"
+    if am_i_raspberrypi():
+        # Python C Extension Module WiringPI OOK, build: "python3 setup.py develop --user"
+        import wiringpiook 
+    else:
+        # Dummy wiringpiook module to simulate GPIO usage in non-Raspberry Pi systems.
+        import dummy_wiringpiook as wiringpiook
 except:
     raise("Must build wiringpiook module.")
 
