@@ -201,24 +201,42 @@ status["last_tx"] = "never"
 # Transmit picode
 def tx_picode(picode=""):
 
-    picode_dict = picode_parse(picode)
+    # Search for picode sequences
+    picode_list = find_picode(picode)
 
-    if not picode_dict:
+    if not len(picode_list)>0:
         return ("Error(422) Unprocessable Entity picode string parse",422)
+    
+    # Checks picode list and stores it to a dict of lists
+    picode_dict_list = list()
 
+    for picode_string in picode_list:
+        picode_parsed = picode_parse(picode_string)
+        if picode_parsed:
+            if "t" in picode_parsed and len(picode_list)>1:
+                return ("Error(422) Unprocessable Entity 't' param not allowed in multiline picode",422)
+            elif not "r" in picode_parsed and len(picode_list)>1:
+                # Add param {"r":1} in multiline picode
+                picode_parsed["r"]=1
+            picode_dict_list.append(picode_parsed)
+        else:
+            return ("Error(422) Unprocessable Entity picode string list parse",422)
+
+    # Parse first list of dict
+    picode_dict = picode_dict_list[0]
     pulse_list = picode_pulselist(picode_dict)
 
     if not pulse_list:
         return ("Error(422) Unprocessable Entity picode pulse list",422)
 
+    # Check if picode is timed
     timed = 0
-    repeats = DEFAULT_REPEATS
-
     if "t" in picode_dict.keys():
         timed = picode_dict["t"]
-    elif "r" in picode_dict.keys():
-        repeats = picode_dict["r"]
+    elif not "r" in picode_dict.keys():
+        picode_dict["r"] = DEFAULT_REPEATS
 
+    # If timed picode
     if timed > 0:
         # Begin RF TX (timed)
         initial = time.time_ns()
@@ -226,7 +244,7 @@ def tx_picode(picode=""):
 
         while time.time_ns() < final:
             try:
-                result = wiringpiook.tx(config['tx_gpio'],pulse_list,repeats)
+                result = wiringpiook.tx(config['tx_gpio'],pulse_list)
             except Exception as err:
                 return ("Error(424) %s" % err,424)
             if result < 0:
@@ -239,23 +257,42 @@ def tx_picode(picode=""):
 
     else:
         # Begin RF TX (repeats)
-        try:
-            result = wiringpiook.tx(config['tx_gpio'],pulse_list,repeats)
-        except Exception as err:
-            return ("Error(424) %s" % err,424)
+        total_tx_time=0
+        pulse_index=0
+        while pulse_index < len(picode_list):
+            try:
+                result = wiringpiook.tx(config['tx_gpio'],pulse_list,picode_dict["r"])
+            except Exception as err:
+                return ("Error(424) %s" % err,424)
 
-        if result < 0:
-            return ("ERROR (%d)" % result,424)
+            if result < 0:
+                return ("ERROR (%d)" % result,424)
 
-        if result > MAX_TX_TIME:
-            dropped = "TX dropped!"
-        else:
-            dropped = "OK"
+            total_tx_time =  total_tx_time + result
+
+            if total_tx_time > MAX_TX_TIME:
+                dropped = "TX dropped!"
+                # Force loop break
+                pulse_index = len(picode_list)
+            else:
+                dropped = "OK"
+
+            pulse_index = pulse_index+1
+
+            # Parse next picode in the list if available
+            if pulse_index < len(picode_list):
+                picode_dict = picode_dict_list[pulse_index]
+                if picode_dict:
+                    pulse_list = picode_pulselist(picode_dict)
+                else:
+                    dropped = "ERROR"
+                    # Force loop break
+                    pulse_index = len(picode_list)
 
         status["tx_count"] += 1
         status["last_tx"] = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime())
 
-        return ("RF TX sent picode in %d ms %s" % (result,dropped) ,202)
+        return ("RF TX sent picode in %d ms %s" % (total_tx_time,dropped) ,202)
 
 # --------------------------------------------------------------------------- #
 # Route to landing page
