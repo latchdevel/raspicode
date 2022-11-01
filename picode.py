@@ -211,3 +211,37 @@ def picode_pulselist(picode:dict):
     else:
         # error: picode not a dict
         return
+
+def find_picode(picode:str = ""):
+
+    """
+    Find picode sequences into a string.
+    
+    Returns a list of found picode strings or an empty list if none is found.
+    """
+
+    def search(picode,char,start=0):
+        """Like an str.index() but returns -1 if not found"""
+        try:
+            return picode.index(char,start)
+        except:
+            return -1
+
+    result = []
+
+    if isinstance(picode,str):
+        s = 0
+        e = len(picode)
+        while s < e:
+            c = search(picode,"c",s)
+            if c >= 0:
+                a = search(picode,"@",s)
+                if a > 0:
+                    result.append(picode[c:a+1])
+                    s = a+1
+                else:
+                    s = e
+            else:
+                s = e
+
+    return result
