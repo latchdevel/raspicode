@@ -69,11 +69,16 @@ def picode_parse(picode:str):
                                         param3_value = int(param3[1])
                                     except:
                                         param3_value = -1
-                                    if param3_value > 0 and param3_value <= MAX_T_PARAMETER:
-                                        # Add param3 to result dict
-                                        result[param3_type] = param3_value
+                                    if param3_value > 0:
+                                        if ((param3_type == "t" and param3_value <= MAX_T_PARAMETER) or
+                                           ( param3_type == "r" and param3_value <= MAX_TX_REPEATS)):
+                                            # Add param3 to result dict
+                                            result[param3_type] = param3_value
+                                        else:
+                                            # error: param3 value invalid >limits
+                                            return
                                     else:
-                                        # error: param3 value invalid
+                                        # error: param3 value invalid <=0
                                         return
                                 else:
                                     # error: param3 not r or t
