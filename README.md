@@ -178,15 +178,23 @@ Wire connections:
 Remember that in any radio frequency system, the most important element is the antenna.
 
 ## API endpoints:
-- `/picode/:picode` method "GET" to transmit the "picode". Returns plain text picode transmission result.
+- `/picode/:picode` method "GET" to transmit the "picode". 
+
+  Multiline picodes are allowed. The characters `+`, `\n` and others are valid for splitting. In multiline picodes the default repeat is 1 instead of 4.
+
+  Returns plain text picode transmission result, showing the total TX time in milliseconds or an error description on failure.
 
   Example:
     ```bash
-      $ curl "http://localhost:8087/picode/c:011010100101011010100110101001100110010101100110101010101010101012;p:1400,600,6800@"
-      RF TX sent picode in 286 ms OK
+      $ curl "http://localhost:8087/picode/c:011010100101011010100110101001100110010101100110101010101010101012;p:1400,600,6800;r:4@+c:011010100101011010100110101001100110010101100110101010101010101012;p:1400,600,6800;r:4@"
+      RF TX sent picode in 571 ms OK
     ```
 
-- `/picode` method "GET" or "POST" with "picode" form parameter to transmit a picode. Returns plain text picode transmission result.
+- `/picode` method "GET" or "POST" with "picode" form parameter to transmit a picode.
+
+  Multiline picodes are allowed. The characters `+`, `\n` and others are valid for splitting. In multiline picodes the default repeat is 1 instead of 4.
+
+  Returns plain text picode transmission result, showing the total TX time in milliseconds or an error description on failure.
   
   Examples:
     ```bash
@@ -230,7 +238,7 @@ Remember that in any radio frequency system, the most important element is the a
 ### Landing page:
 - `/` method "GET" to request the HTML "landing page":
 
-  ![Raspicode landing page](images/LandingPage.png)
+![Raspicode landing page](images/LandingPage.png)
 
 
 # License
