@@ -149,9 +149,17 @@ def picode_parse(picode:str):
                     
                     # Add param1 to result dict
                     result["c"] = pulses_type
-
-                    # All checks OK
-                    return result
+                    
+                    # Check for uniq pulses_type count equal to pulses_length count
+                    if len(set(pulses_type)) > len(pulses_length):
+                        # error: uniq pulses_type > pulses_length
+                        return
+                    elif len(set(pulses_type)) < len(pulses_length):
+                        # error: pulses_length > uniq pulses_type
+                        return
+                    else:
+                        # All checks OK
+                        return result
                 else:
                     # error: invalid params number (;)
                     return
@@ -197,9 +205,12 @@ def picode_pulselist(picode:dict):
             if isinstance(picode["c"], list) and isinstance(picode["p"], list):
                 # Pulses loop
                 for pulse_type in picode["c"]:
-                    # Add pulse value to pulse list
-                    pulse_list.append((picode["p"][pulse_type]))
-
+                    try:
+                        # Add pulse value to pulse list
+                        pulse_list.append((picode["p"][pulse_type]))
+                    except:
+                        # error: list index out of range
+                        return
                 # All checks OK
                 return pulse_list
             else:
