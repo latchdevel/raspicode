@@ -1,5 +1,10 @@
 """
-Dummy wiringpiook module to simulate GPIO usage in non-Raspberry Pi systems.
+   Dummy wiringpiook module to simulate GPIO usage in non-Raspberry Pi systems.
+
+   See: https://github.com/latchdevel/raspicode
+
+   Copyright (c) 2022-2024 Jorge Rivera. All right reserved.
+   License GNU Lesser General Public License v3.0.
 """
 
 from time import sleep as _sleep
