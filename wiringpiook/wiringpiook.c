@@ -152,10 +152,23 @@ PyMODINIT_FUNC PyInit_wiringpiook(void) {
       See: http://wiringpi.com/reference/setup/
    */
 
+   PyObject *m = NULL;
+
+   m = PyModule_Create(&wiringpiook_mod);
+
+   if (m == NULL) {
+      goto except;
+   }
+
    if (wiringPiSetupGpio() == -1){
       PyErr_SetString(PyExc_TypeError, "unable to init wiringPiSetupGpio().");
       return NULL;
    }
 
-	return PyModule_Create(&wiringpiook_mod);
+   goto finally;
+except:
+   Py_XDECREF(m);
+   m = NULL;
+finally:
+   return m;
 }
