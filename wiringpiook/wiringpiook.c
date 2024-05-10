@@ -160,6 +160,28 @@ PyMODINIT_FUNC PyInit_wiringpiook(void) {
       goto except;
    }
 
+   /* Adding module globals */
+
+   if (PyModule_AddIntConstant(m, "MAX_PULSE_LENGTH", MAX_PULSE_LENGTH)) {
+      goto except;
+   }
+
+   if (PyModule_AddIntConstant(m, "MAX_PULSE_COUNT", MAX_PULSE_COUNT)) {
+      goto except;
+   }
+
+   if (PyModule_AddIntConstant(m, "MAX_TX_TIME", MAX_TX_TIME)) {
+      goto except;
+   }
+
+   if (PyModule_AddIntConstant(m, "MAX_TX_REPEATS", MAX_TX_REPEATS)) {
+      goto except;
+   }
+
+   if (PyModule_AddIntConstant(m, "DEFAULT_REPEATS", DEFAULT_REPEATS)) {
+      goto except;
+   }
+
    if (wiringPiSetupGpio() == -1){
       PyErr_SetString(PyExc_TypeError, "unable to init wiringPiSetupGpio().");
       return NULL;
