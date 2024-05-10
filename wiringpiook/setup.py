@@ -1,21 +1,19 @@
-# Python C Extension Module WiringPi OOK  
-# Send OOK pulse train to digital gpio using wiringPi library
-# 
-# build: "python3 setup.py develop --user"
-# usage: wiringpiook.tx(bcm_gpio,pulse_list,repeats=4)
-# return: tx time millis or negative error code
-# example: >>> import wiringpiook
-#          >>> wiringpiook.tx(21,[500,500,2000,2000])
-#          >>> 20
-#
-# Copyright (c) 2022 Jorge Rivera. All right reserved.
-# License GNU Lesser General Public License v3.0.
+"""
+   Python C Extension Module WiringPi OOK
+
+   Send OOK pulse train to digital GPIO using wiringPi C library
+
+   See: https://github.com/latchdevel/raspicode
+
+   Copyright (c) 2022-2024 Jorge Rivera. All right reserved.
+   License GNU Lesser General Public License v3.0.
+"""
 
 from setuptools import setup, Extension
 
 setup(
     name="wiringpiook",
-    version="1.0",
+    version="1.1",
     ext_modules=[Extension('wiringpiook', ['wiringpiook.c','wiringPi.c'])],
     url="https://github.com/latchdevel/raspicode",
     author="Jorge Rivera",
