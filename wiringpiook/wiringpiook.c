@@ -3,28 +3,28 @@
    
    Send OOK pulse train to digital gpio using wiringPi C library
 
-   wiringpiook.tx(bcm_gpio,pulse_list,repeats=4)
+   See: https://github.com/latchdevel/raspicode
 
-   Copyright (c) 2022 Jorge Rivera. All right reserved.
+   Copyright (c) 2022-2024 Jorge Rivera. All right reserved.
    License GNU Lesser General Public License v3.0.
 */
 
 #include <Python.h>        // Entry point of the Python C API. C extensions should only #include <Python.h>
-#include "wiringPi.h"      // Custom v2.70 Wiring library for Raspberry Pi (c) 2012-2017 Gordon Henderson (LGPL v3)
+#include "wiringPi.h"      // Custom v2.71 Wiring library for Raspberry Pi (c) 2012-2017 Gordon Henderson (LGPL v3)
 
 /* TX limits from https://github.com/latchdevel/pilight-usb-nano */
-#define MAX_PULSE_LENGHT   100000   // Max pulse lenght (microseconds) = 100 millis = 0.1 secs
+#define MAX_PULSE_LENGTH   100000   // Max pulse length (microseconds)
 #define MAX_PULSE_COUNT      1000   // Max pulse count
 #define MAX_TX_TIME          2000   // Max TX time (milliseconds)
 #define MAX_TX_REPEATS         20   // Max TX repeats
 #define DEFAULT_REPEATS         4   // Default TX repeats
 
-/* Error return codes for wiringpiook.tx(bcm_gpio,pulse_list,repeats=4) */
+/* Error return codes for tx(bcm_gpio, pulse_list, repeats = DEFAULT_REPEATS) */
 #define NO_ERROR                      0
 #define ERROR_UNKNOW                 -1
 #define ERROR_INVALID_PULSE_COUNT    -2
 #define ERROR_PULSETRAIN_OOD         -3
-#define ERROR_INVALID_PULSE_LENGHT   -4
+#define ERROR_INVALID_PULSE_LENGTH   -4
 #define ERROR_INVALID_TX_TIME        -5
 
 // Internal function
@@ -76,7 +76,7 @@ PyObject* tx_internal(PyObject* self, PyObject* args) {
                return NULL;
             }else{
                pulse = PyLong_AsLong(pItem);
-               if ((pulse > 0) & (pulse <= MAX_PULSE_LENGHT)){
+               if ((pulse > 0) & (pulse <= MAX_PULSE_LENGTH)){
                   pulses[i]=(uint32_t)pulse;
                   tx_time = tx_time + pulses[i];
                   if (tx_time > MAX_TX_TIME*1000){
@@ -84,7 +84,7 @@ PyObject* tx_internal(PyObject* self, PyObject* args) {
                      break;
                   }
                }else{
-                  result = ERROR_INVALID_PULSE_LENGHT;
+                  result = ERROR_INVALID_PULSE_LENGTH;
                   break;
                }
             }
@@ -111,7 +111,7 @@ PyObject* tx_internal(PyObject* self, PyObject* args) {
             // Set GPIO state (HIGH for odd pulse index or LOW for even pulse index)
             digitalWrite(gpio,!(i%2));
 
-            // Delay pulse lenght
+            // Delay pulse length
             delayMicrosecondsHard(pulses[i]);
 
          }
@@ -135,7 +135,7 @@ PyObject* tx_internal(PyObject* self, PyObject* args) {
 
 // Python function definition
 PyMethodDef wiringpiook_funcs[] = {
-	{"tx", (PyCFunction)tx_internal, METH_VARARGS, "Wiring PI OOK tx(bcm_gpio,[pulse_length,pulse_length,...],repeats=4)."},
+	{"tx", (PyCFunction)tx_internal, METH_VARARGS, "tx(bcm_gpio, [pulse_length,pulse_length,...], repeats = DEFAULT_REPEATS)."},
 	{NULL}
 };
 
