@@ -64,7 +64,7 @@ def tx(bcm_gpio:int, pulse_list:list, repeats:int = DEFAULT_REPEATS):
     for pulse in pulse_list:
         if ((pulse > 0) and (pulse < MAX_PULSE_LENGTH)):
             tx_time = tx_time + pulse
-            if (tx_time > MAX_TX_TIME*1000):
+            if (tx_time*repeats > MAX_TX_TIME*1000):
                 return _ERROR_INVALID_TX_TIME
         else:
             return _ERROR_INVALID_PULSE_LENGTH
