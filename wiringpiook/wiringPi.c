@@ -76,9 +76,9 @@
 
 #include "wiringPi.h"
 
-#define VERSION "2.70"
+#define VERSION "2.71"
 #define VERSION_MAJOR 2
-#define VERSION_MINOR 70
+#define VERSION_MINOR 71
 
 // Environment Variables
 
@@ -761,10 +761,10 @@ int piGpioLayout (void)
   if ((cpuFd = fopen ("/proc/cpuinfo", "r")) == NULL)
     piGpioLayoutOops ("Unable to open /proc/cpuinfo") ;
 
+#ifdef	DONT_CARE_ANYMORE
 // Start by looking for the Architecture to make sure we're really running
 //	on a Pi. I'm getting fed-up with people whinging at me because
 //	they can't get it to work on weirdFruitPi boards...
-
   while (fgets (line, 120, cpuFd) != NULL)
     if (strncmp (line, "Hardware", 8) == 0)
       break ;
@@ -783,7 +783,6 @@ int piGpioLayout (void)
 //	I do not support so don't email me your bleating whinges about anything
 //	other than a genuine Raspberry Pi.
 
-#ifdef	DONT_CARE_ANYMORE
   if (! (strstr (line, "BCM2708") || strstr (line, "BCM2709") || strstr (line, "BCM2835")))
   {
     fprintf (stderr, "Unable to determine hardware version. I see: %s,\n", line) ;
@@ -794,7 +793,6 @@ int piGpioLayout (void)
     fprintf (stderr, "Raspberry Pi ONLY.\n") ;
     exit (EXIT_FAILURE) ;
   }
-#endif
 
 // Actually... That has caused me more than 10,000 emails so-far. Mosty by
 //	people who think they know better by creating a statically linked
@@ -815,6 +813,7 @@ int piGpioLayout (void)
 //	In-future, I ought to use the device tree as there are now Pi entries in
 //	/proc/device-tree/ ...
 //	but I'll leave that for the next revision. Or the next.
+#endif
 
 // Isolate the Revision line
 
